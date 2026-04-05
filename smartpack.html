@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartPack — Best Value Biscuits & Snacks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf6ef;
+  --warm: #f2e8d5;
+  --brown: #2c1a0e;
+  --mid: #7a5c3e;
+  --light: #b89a7a;
+  --accent: #d4420a;
+  --accent2: #e8a020;
+  --green: #2a7a4a;
+  --card-bg: #fff;
+  --border: #e8ddd0;
+  --shadow: 0 2px 16px rgba(44,26,14,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--cream); color: var(--brown); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+/* NAV */
+nav { background: var(--brown); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+.nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--cream); letter-spacing: -0.5px; }
+.nav-logo span { color: var(--accent2); }
+.nav-right { display: flex; gap: 12px; align-items: center; }
+.nav-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 16px; border-radius: 4px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; transition: all 0.2s; }
+.nav-btn:hover, .nav-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* HERO */
+.hero { background: linear-gradient(135deg, var(--brown) 0%, #4a2e1a 100%); padding: 60px 32px 50px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(228,160,32,0.15) 0%, transparent 60%); }
+.hero-tag { display: inline-block; background: rgba(212,66,10,0.3); border: 1px solid rgba(212,66,10,0.5); color: #ffb38a; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 18px; }
+.hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 5vw, 3.2rem); color: var(--cream); line-height: 1.15; margin-bottom: 14px; position: relative; }
+.hero h1 em { color: var(--accent2); font-style: italic; }
+.hero p { color: rgba(250,246,239,0.65); font-size: 1rem; max-width: 480px; margin: 0 auto 28px; line-height: 1.6; }
+.search-bar { max-width: 500px; margin: 0 auto; display: flex; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.search-bar input { flex: 1; padding: 14px 20px; font-size: 1rem; font-family: 'DM Sans', sans-serif; border: none; outline: none; background: #fff; color: var(--brown); }
+.search-bar input::placeholder { color: var(--light); }
+.search-bar button { background: var(--accent); border: none; color: #fff; padding: 14px 24px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+.search-bar button:hover { background: #b83508; }
+
+/* MAIN */
+.main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+/* CATEGORY GRID */
+.category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 8px; }
+
+.cat-card {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 20px 22px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.cat-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(212,66,10,0.04) 0%, transparent 60%); opacity: 0; transition: opacity 0.2s; }
+.cat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(44,26,14,0.13); border-color: var(--accent); }
+.cat-card:hover::before { opacity: 1; }
+.cat-card:hover .cat-arrow { opacity: 1; transform: translateX(0); }
+.cat-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
+.cat-name { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--brown); line-height: 1.2; margin-bottom: 5px; }
+.cat-count { font-size: 0.72rem; color: var(--mid); }
+.cat-arrow { font-size: 0.75rem; color: var(--accent); margin-top: 10px; opacity: 0; transform: translateX(-4px); transition: all 0.2s; display: block; font-weight: 600; }
+
+/* Section heading */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+.section-head h2 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; }
+.count-tag { font-size: 0.75rem; color: var(--mid); background: var(--warm); padding: 3px 10px; border-radius: 10px; }
+
+/* Breadcrumb */
+.products-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.bc-home { font-size: 0.82rem; color: var(--accent); cursor: pointer; font-weight: 500; }
+.bc-home:hover { text-decoration: underline; }
+.bc-sep { color: var(--light); font-size: 0.8rem; }
+.bc-current { font-size: 0.82rem; color: var(--mid); }
+
+/* Brand filter */
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; }
+.filter-label { font-size: 0.8rem; color: var(--mid); margin-right: 4px; font-weight: 500; }
+.filter-tab { padding: 7px 18px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--mid); cursor: pointer; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.filter-tab:hover { border-color: var(--accent); color: var(--accent); }
+.filter-tab.active { background: var(--brown); color: #fff; border-color: var(--brown); }
+
+/* PRODUCT CARDS */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(44,26,14,0.13); }
+.card-top { background: var(--warm); padding: 20px 20px 14px; display: flex; align-items: flex-start; gap: 14px; border-bottom: 1px solid var(--border); }
+.brand-icon { width: 48px; height: 48px; border-radius: 10px; background: var(--brown); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--cream); flex-shrink: 0; letter-spacing: -1px; }
+.card-meta h3 { font-family: 'DM Serif Display', serif; font-size: 1.05rem; line-height: 1.2; }
+.card-meta .brand-name { font-size: 0.72rem; color: var(--mid); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+.card-body { padding: 16px 20px; }
+.packs-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.pack-pill { font-size: 0.75rem; padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); color: var(--mid); background: var(--cream); }
+.pack-pill.best-pill { background: #fff8e8; border-color: var(--accent2); color: #9a5a00; font-weight: 600; }
+.card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); }
+.best-value-chip { display: flex; align-items: center; gap: 5px; background: #edfaf3; border: 1px solid #7dd3aa; color: var(--green); font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 5px; }
+.view-btn { font-size: 0.8rem; color: var(--accent); font-weight: 600; cursor: pointer; }
+
+/* DETAIL */
+#detailView { background: var(--cream); }
+.detail-header { background: var(--brown); padding: 28px 32px; color: var(--cream); }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; margin-bottom: 20px; transition: all 0.2s; }
+.back-btn:hover { background: rgba(255,255,255,0.1); }
+.detail-title-row { display: flex; align-items: flex-start; gap: 16px; }
+.detail-brand-icon { width: 60px; height: 60px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--cream); flex-shrink: 0; }
+.detail-brand-tag { font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent2); margin-bottom: 4px; }
+.detail-product-name { font-family: 'DM Serif Display', serif; font-size: 1.8rem; line-height: 1.1; }
+.detail-sub { color: rgba(250,246,239,0.55); font-size: 0.85rem; margin-top: 4px; }
+.detail-body { max-width: 900px; margin: 0 auto; padding: 36px 24px; }
+.ranking-banner { background: linear-gradient(135deg, #fff8e8, #fff3d8); border: 1px solid var(--accent2); border-radius: 10px; padding: 16px 22px; display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.ranking-banner .trophy { font-size: 2rem; }
+.ranking-banner p { font-size: 0.9rem; line-height: 1.5; color: var(--brown); }
+.ranking-banner strong { color: var(--accent); }
+.compare-table { width: 100%; border-collapse: collapse; margin-bottom: 28px; }
+.compare-table th { background: var(--brown); color: var(--cream); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; padding: 12px 16px; text-align: left; font-weight: 500; }
+.compare-table th:first-child { border-radius: 8px 0 0 0; }
+.compare-table th:last-child { border-radius: 0 8px 0 0; }
+.compare-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; background: #fff; vertical-align: middle; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+.compare-table tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+.compare-table tr.row-best td { background: #fdfff5; }
+.compare-table tr.row-worst td { background: #fffaf8; opacity: 0.85; }
+.rank-num { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-right: 8px; }
+.rank-1 { background: var(--accent2); color: #fff; }
+.rank-2, .rank-3, .rank-4 { background: var(--border); color: var(--mid); }
+.per-unit { font-weight: 700; color: var(--brown); }
+.verdict-badge { font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 4px; white-space: nowrap; }
+.v-best { background: #edfaf3; color: var(--green); border: 1px solid #7dd3aa; }
+.v-good { background: #f0f8ff; color: #1a5e9a; border: 1px solid #93c5e8; }
+.v-ok   { background: #fff9ee; color: #8a5800; border: 1px solid var(--accent2); }
+.v-poor { background: #fff3f0; color: #9a2010; border: 1px solid #f5a090; }
+.val-bar-wrap { width: 100%; background: var(--border); border-radius: 3px; height: 5px; margin-top: 5px; }
+.val-bar { height: 100%; border-radius: 3px; background: var(--accent2); }
+.insight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.insight-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+.insight-card .i-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--mid); margin-bottom: 4px; }
+.insight-card .i-val { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--brown); }
+.insight-card .i-sub { font-size: 0.75rem; color: var(--mid); margin-top: 2px; }
+.insight-card.accent-card { background: var(--brown); border-color: var(--brown); }
+.insight-card.accent-card .i-label { color: rgba(250,246,239,0.5); }
+.insight-card.accent-card .i-val { color: var(--accent2); }
+.insight-card.accent-card .i-sub { color: rgba(250,246,239,0.5); }
+
+/* ADMIN */
+.admin-wrap { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+.admin-header { margin-bottom: 28px; }
+.admin-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; }
+.admin-header p { color: var(--mid); font-size: 0.85rem; margin-top: 4px; }
+.admin-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; }
+.admin-tab { padding: 10px 22px; cursor: pointer; font-size: 0.85rem; font-weight: 500; color: var(--mid); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+.admin-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+.form-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+.form-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 18px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-full { grid-column: 1 / -1; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mid); font-weight: 500; }
+.form-control { padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--brown); background: var(--cream); outline: none; transition: border-color 0.2s; }
+.form-control:focus { border-color: var(--accent); background: #fff; }
+select.form-control { cursor: pointer; }
+.btn { padding: 10px 22px; border-radius: 6px; border: none; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; }
+.btn-primary { background: var(--brown); color: var(--cream); }
+.btn-primary:hover { background: var(--accent); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: #b83508; }
+.btn-ghost { background: none; border: 1px solid var(--border); color: var(--mid); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger { background: none; border: 1px solid #f5a090; color: #9a2010; font-size: 0.75rem; padding: 6px 12px; }
+.btn-danger:hover { background: #fff3f0; }
+.btn-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.admin-list { display: flex; flex-direction: column; gap: 12px; }
+.admin-item { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; }
+.admin-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.admin-item-name { font-weight: 600; font-size: 0.95rem; }
+.admin-item-brand { font-size: 0.75rem; color: var(--mid); }
+.admin-packs { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-pack-tag { font-size: 0.78rem; background: var(--cream); border: 1px solid var(--border); padding: 4px 10px; border-radius: 5px; display: flex; align-items: center; gap: 6px; color: var(--brown); }
+.del-pack { cursor: pointer; color: var(--light); font-size: 0.85rem; transition: color 0.15s; }
+.del-pack:hover { color: var(--accent); }
+.admin-actions { display: flex; gap: 8px; }
+.pack-builder { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.pack-row-input { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pack-row-input .form-control { flex: 1; min-width: 90px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 28px; right: 28px; background: var(--brown); color: var(--cream); padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 999; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--accent); }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--mid); }
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-size: 0.9rem; }
+
+/* Login */
+.login-overlay { position: fixed; inset: 0; background: rgba(44,26,14,0.85); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(4px); }
+.login-box { background: #fff; border-radius: 14px; padding: 36px; width: 320px; text-align: center; }
+.login-box h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 6px; }
+.login-box p { font-size: 0.8rem; color: var(--mid); margin-bottom: 22px; }
+.login-box input { width: 100%; margin-bottom: 12px; }
+
+/* Animations */
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.cat-card { animation: fadeUp 0.3s ease both; }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .hero { padding: 40px 20px 36px; }
+  .compare-table { display: block; overflow-x: auto; }
+  .insight-grid { grid-template-columns: 1fr 1fr; }
+  .category-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="login-overlay" id="loginOverlay" style="display:none">
+  <div class="login-box">
+    <div style="font-size:2rem;margin-bottom:12px">🔐</div>
+    <h2>Admin Login</h2>
+    <p>Enter your password to manage products</p>
+    <input class="form-control" type="password" id="loginInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="doLogin()">Login</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="closeLogin()">Cancel</button>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">Smart<span>Pack</span></div>
+  <div class="nav-right">
+    <button class="nav-btn active" id="navShop" onclick="showPage('shop')">🛒 Shop</button>
+    <button class="nav-btn" id="navAdmin" onclick="requireAdmin()">⚙ Admin</button>
+  </div>
+</nav>
+
+<!-- SHOP PAGE -->
+<div class="page active" id="shopPage">
+  <div class="hero">
+    <div class="hero-tag">Biscuits &amp; Snacks · India</div>
+    <h1>Stop overpaying.<br>Find the <em>real</em> best buy.</h1>
+    <p>We break down every pack size so you know exactly which one gives you the most for your money.</p>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search Britannia, Parle, Lays…" oninput="onSearch()">
+      <button onclick="onSearch()">Search</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- CATEGORY BROWSE VIEW -->
+    <div id="categoryView">
+      <div class="section-head" style="margin-bottom:18px">
+        <h2>Browse by Category</h2>
+        <span class="count-tag" id="catTotalCount"></span>
+      </div>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <!-- PRODUCTS VIEW (after picking a category or searching) -->
+    <div id="productsView" style="display:none">
+      <div class="products-breadcrumb">
+        <span class="bc-home" onclick="backToCategories()">🏠 All Categories</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-current" id="bcCurrent"></span>
+      </div>
+      <div class="filter-row" id="brandFilterRow">
+        <span class="filter-label">Brand:</span>
+        <button class="filter-tab active" id="allBrandsBtn" onclick="filterBrand('ALL',this)">All</button>
+        <div id="brandTabs"></div>
+      </div>
+      <div class="section-head">
+        <h2 id="productsHeading"></h2>
+        <span class="count-tag" id="productCount">0 products</span>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DETAIL PAGE -->
+<div class="page" id="detailPage">
+  <div id="detailView"></div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page" id="adminPage">
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <p>Manage biscuits &amp; snacks — brands, products, and pack sizes.</p>
+    </div>
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchAdminTab('addProduct',this)">+ Add Product</div>
+      <div class="admin-tab" onclick="switchAdminTab('manageProducts',this)">Manage Products</div>
+    </div>
+    <div class="admin-section active" id="addProduct">
+      <div class="form-card">
+        <h3>Product Details</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Brand Name</label>
+            <input class="form-control" id="aBrand" placeholder="e.g. Britannia" list="brandList">
+            <datalist id="brandList"></datalist>
+          </div>
+          <div class="form-group">
+            <label>Product Name</label>
+            <input class="form-control" id="aProduct" placeholder="e.g. Marie Gold">
+          </div>
+          <div class="form-group form-full">
+            <label>Sub-category <span style="font-size:0.68rem;color:var(--light);font-weight:400;letter-spacing:0">— type a new one or pick existing</span></label>
+            <div style="position:relative;display:flex;gap:8px;align-items:center">
+              <input class="form-control" id="aCategory" placeholder="e.g. Biscuits, Chips, Namkeen, Wafers…" list="categoryList" autocomplete="off" style="flex:1">
+              <datalist id="categoryList"></datalist>
+              <button class="btn btn-ghost" onclick="manageCats()" style="padding:10px 14px;white-space:nowrap;flex-shrink:0">✎ Manage</button>
+            </div>
+            <div id="catChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3>Pack Sizes &amp; Prices</h3>
+        <p style="font-size:0.82rem;color:var(--mid);margin-bottom:16px">Add all pack variants available in the market. e.g. ₹10 / 60g, ₹38 / 250g, ₹140 / 1kg</p>
+        <div class="pack-builder" id="packBuilder"></div>
+        <button class="btn btn-ghost" style="margin-top:12px;width:100%" onclick="addPackRow()">+ Add another pack size</button>
+        <div class="btn-row">
+          <button class="btn btn-accent" onclick="saveProduct()">✓ Save Product</button>
+          <button class="btn btn-ghost" onclick="clearForm()">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div class="admin-section" id="manageProducts">
+      <div class="admin-list" id="adminList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASS = 'admin123';
+let isAdmin = false;
+let currentBrandFilter = 'ALL';
+let currentCategory = null; // null = show category grid
+
+// Category icons map
+const CAT_ICONS = {
+  'biscuits': '🍪', 'cookies': '🍪', 'cream biscuits': '🥪', 'crackers': '🧀',
+  'crackers / namkeen': '🧆', 'namkeen': '🧆', 'chips': '🥔', 'chips & crisps': '🥔',
+  'crisps': '🥔', 'wafers': '🧇', 'snack bars': '🍫', 'chocolate': '🍫',
+  'nuts': '🥜', 'popcorn': '🍿', 'candy': '🍬', 'other snacks': '🍽️'
+};
+function getCatIcon(name) {
+  return CAT_ICONS[name.toLowerCase()] || '📦';
+}
+
+let products = JSON.parse(localStorage.getItem('sp_products') || 'null');
+if (!products) {
+  products = [
+    { id:'p1', brand:'Britannia', name:'Marie Gold', category:'Biscuits', packs:[
+      {label:'₹10 Pack',price:10,qty:60,unit:'g'},
+      {label:'₹38 Pack',price:38,qty:250,unit:'g'},
+      {label:'₹140 Pack',price:140,qty:1000,unit:'g'}]},
+    { id:'p2', brand:'Parle', name:'Glucose G', category:'Biscuits', packs:[
+      {label:'₹5 Pack',price:5,qty:38,unit:'g'},
+      {label:'₹10 Pack',price:10,qty:80,unit:'g'},
+      {label:'₹30 Pack',price:30,qty:250,unit:'g'},
+      {label:'₹120 Pack',price:120,qty:1100,unit:'g'}]},
+    { id:'p3', brand:'Lays', name:'Classic Salted', category:'Chips & Crisps', packs:[
+      {label:'₹10 Pack',price:10,qty:26,unit:'g'},
+      {label:'₹20 Pack',price:20,qty:52,unit:'g'},
+      {label:'₹50 Pack',price:50,qty:145,unit:'g'}]},
+    { id:'p4', brand:'Britannia', name:'Good Day Cashew', category:'Cookies', packs:[
+      {label:'₹10 Pack',price:10,qty:55,unit:'g'},
+      {label:'₹35 Pack',price:35,qty:200,unit:'g'},
+      {label:'₹150 Pack',price:150,qty:900,unit:'g'}]},
+    { id:'p5', brand:'Parle', name:'Hide & Seek', category:'Cream Biscuits', packs:[
+      {label:'₹10 Pack',price:10,qty:57,unit:'g'},
+      {label:'₹40 Pack',price:40,qty:238,unit:'g'}]}
+  ];
+  save();
+}
+
+function save() { localStorage.setItem('sp_products', JSON.stringify(products)); }
+
+// ── PAGE ROUTING ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + 'Page').classList.add('active');
+  document.getElementById('navShop').classList.toggle('active', name === 'shop');
+  document.getElementById('navAdmin').classList.toggle('active', name === 'admin');
+  if (name === 'shop') renderShop();
+  if (name === 'admin') renderAdmin();
+  window.scrollTo(0,0);
+}
+
+// ── AUTH ──
+function requireAdmin() {
+  if (isAdmin) { showPage('admin'); return; }
+  document.getElementById('loginOverlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('loginInput').focus(), 100);
+}
+function doLogin() {
+  if (document.getElementById('loginInput').value === ADMIN_PASS) {
+    isAdmin = true; closeLogin(); showPage('admin'); toast('Logged in ✓','success');
+  } else { toast('Wrong password','error'); document.getElementById('loginInput').value=''; }
+}
+function closeLogin() { document.getElementById('loginOverlay').style.display='none'; document.getElementById('loginInput').value=''; }
+
+// ── HELPERS ──
+function calcPerUnit(price, qty, unit) {
+  let base = qty, baseUnit = unit;
+  if (unit==='kg') { base=qty*1000; baseUnit='g'; }
+  if (unit==='L')  { base=qty*1000; baseUnit='ml'; }
+  return { perUnit: price/base, baseUnit };
+}
+function getRankedPacks(packs) {
+  return packs.map(p => { const {perUnit,baseUnit}=calcPerUnit(p.price,p.qty,p.unit); return {...p,perUnit,baseUnit}; }).sort((a,b)=>a.perUnit-b.perUnit);
+}
+function getBrands(list) { return [...new Set((list||products).map(p=>p.brand))].sort(); }
+function getProductCategories() { return [...new Set(products.map(p=>p.category))].sort(); }
+function uid() { return 'p'+Date.now()+Math.random().toString(36).slice(2,6); }
+
+// ── TOAST ──
+function toast(msg,type='success') {
+  const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type+' show';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── SHOP: CATEGORY GRID ──
+function renderShop() {
+  // Clear search
+  document.getElementById('searchInput').value = '';
+  if (currentCategory === null) showCategoryView();
+  else showProductsView(currentCategory);
+}
+
+function showCategoryView() {
+  currentCategory = null;
+  document.getElementById('categoryView').style.display = '';
+  document.getElementById('productsView').style.display = 'none';
+
+  const cats = getProductCategories();
+  document.getElementById('catTotalCount').textContent = products.length + ' products';
+
+  const grid = document.getElementById('categoryGrid');
+  if (!cats.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🍪</div><p>No products yet.<br>Ask admin to add some!</p></div>`;
+    return;
+  }
+  grid.innerHTML = cats.map((cat, i) => {
+    const count = products.filter(p => p.category === cat).length;
+    const icon = getCatIcon(cat);
+    return `<div class="cat-card" style="animation-delay:${i*0.05}s" onclick="openCategory('${cat.replace(/'/g,"\\'")}')">
+      <span class="cat-icon">${icon}</span>
+      <div class="cat-name">${cat}</div>
+      <div class="cat-count">${count} product${count!==1?'s':''}</div>
+      <span class="cat-arrow">Browse →</span>
+    </div>`;
+  }).join('');
+}
+
+function openCategory(cat) {
+  currentCategory = cat;
+  currentBrandFilter = 'ALL';
+  showProductsView(cat);
+  window.scrollTo(0,0);
+}
+
+function backToCategories() {
+  currentCategory = null;
+  currentBrandFilter = 'ALL';
+  document.getElementById('searchInput').value = '';
+  showCategoryView();
+}
+
+function showProductsView(cat) {
+  document.getElementById('categoryView').style.display = 'none';
+  document.getElementById('productsView').style.display = '';
+
+  document.getElementById('bcCurrent').textContent = cat || 'Search Results';
+  document.getElementById('productsHeading').textContent = cat || 'Search Results';
+
+  const filtered = cat ? products.filter(p => p.category === cat) : products;
+  renderBrandTabs(filtered);
+  applyBrandFilter(filtered);
+}
+
+function renderBrandTabs(list) {
+  const brands = getBrands(list);
+  const container = document.getElementById('brandTabs');
+  container.innerHTML = brands.map(b =>
+    `<button class="filter-tab" onclick="filterBrand('${b}',this)">${b}</button>`
+  ).join('');
+  // Reset All button
+  document.getElementById('allBrandsBtn').classList.add('active');
+  document.querySelectorAll('#brandTabs .filter-tab').forEach(t=>t.classList.remove('active'));
+}
+
+function filterBrand(brand, btn) {
+  currentBrandFilter = brand;
+  document.querySelectorAll('#brandFilterRow .filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const base = currentCategory ? products.filter(p=>p.category===currentCategory) : products;
+  applyBrandFilter(base);
+}
+
+function applyBrandFilter(list) {
+  let filtered = currentBrandFilter === 'ALL' ? list : list.filter(p=>p.brand===currentBrandFilter);
+  document.getElementById('productCount').textContent = filtered.length + ' product' + (filtered.length!==1?'s':'');
+  renderGrid(filtered);
+}
+
+// ── SEARCH ──
+function onSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!q) { currentCategory ? showProductsView(currentCategory) : showCategoryView(); return; }
+  // Show products view with search results
+  document.getElementById('categoryView').style.display = 'none';
+  document.getElementById('productsView').style.display = '';
+  document.getElementById('bcCurrent').textContent = `Search: "${q}"`;
+  document.getElementById('productsHeading').textContent = `Results for "${q}"`;
+  document.getElementById('brandFilterRow').style.display = 'none';
+
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+  );
+  document.getElementById('productCount').textContent = filtered.length + ' product' + (filtered.length!==1?'s':'');
+  renderGrid(filtered);
+  document.getElementById('brandFilterRow').style.display = '';
+}
+
+function renderGrid(list) {
+  const grid = document.getElementById('productsGrid');
+  if (!list.length) { grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><p>No products found.</p></div>`; return; }
+  grid.innerHTML = list.map(p => {
+    const ranked = getRankedPacks(p.packs);
+    const best = ranked[0];
+    const initials = p.brand.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const pillsHtml = ranked.map((pk,i)=>`<span class="pack-pill${i===0?' best-pill':''}">₹${pk.price} / ${pk.qty}${pk.unit}</span>`).join('');
+    return `<div class="product-card" onclick="showDetail('${p.id}')">
+      <div class="card-top">
+        <div class="brand-icon">${initials}</div>
+        <div class="card-meta">
+          <div class="brand-name">${p.brand} · ${p.category}</div>
+          <h3>${p.name}</h3>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="packs-preview">${pillsHtml}</div>
+        <div class="card-footer">
+          <div class="best-value-chip">🏆 Best: ₹${best.price} / ${best.qty}${best.unit}</div>
+          <div class="view-btn">Compare →</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── DETAIL ──
+function showDetail(id) {
+  const p = products.find(x=>x.id===id);
+  if (!p) return;
+  const ranked = getRankedPacks(p.packs);
+  const best = ranked[0], worst = ranked[ranked.length-1];
+  const savingsPct = ((worst.perUnit-best.perUnit)/worst.perUnit*100).toFixed(1);
+  const initials = p.brand.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  const tableRows = ranked.map((pk,i) => {
+    const barW = (best.perUnit/pk.perUnit*100).toFixed(1);
+    const savPct = i===0?null:((pk.perUnit-best.perUnit)/best.perUnit*100).toFixed(1);
+    let vClass,vText;
+    if (i===0)                                    { vClass='v-best'; vText='🏆 Best Value'; }
+    else if (i===1)                               { vClass='v-good'; vText='✓ Good'; }
+    else if (i===ranked.length-1&&ranked.length>2){ vClass='v-poor'; vText='✗ Worst'; }
+    else                                          { vClass='v-ok';   vText='~ Average'; }
+    const rankCls = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-4';
+    const rowCls  = i===0?'row-best':(i===ranked.length-1&&ranked.length>2?'row-worst':'');
+    return `<tr class="${rowCls}">
+      <td><span class="rank-num ${rankCls}">${i+1}</span>${pk.label||('₹'+pk.price+' Pack')}</td>
+      <td>₹${pk.price}</td><td>${pk.qty} ${pk.unit}</td>
+      <td><span class="per-unit">₹${pk.perUnit.toFixed(4)}</span><span style="color:var(--light);font-size:0.75rem"> / ${pk.baseUnit}</span>
+        <div class="val-bar-wrap"><div class="val-bar" style="width:${barW}%"></div></div>
+        ${savPct?`<div style="font-size:0.72rem;color:var(--accent);margin-top:3px">▲ ${savPct}% costlier/unit</div>`:'<div style="font-size:0.72rem;color:var(--green);margin-top:3px">← cheapest per unit</div>'}
+      </td>
+      <td><span class="verdict-badge ${vClass}">${vText}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Back button goes to category or search depending on context
+  const backAction = currentCategory ? `openCategory('${(currentCategory||'').replace(/'/g,"\\'")}')` : `showPage('shop')`;
+
+  document.getElementById('detailView').innerHTML = `
+    <div class="detail-header">
+      <button class="back-btn" onclick="${backAction}">← Back to ${currentCategory||'results'}</button>
+      <div class="detail-title-row">
+        <div class="detail-brand-icon">${initials}</div>
+        <div>
+          <div class="detail-brand-tag">${p.brand} · ${p.category}</div>
+          <div class="detail-product-name">${p.name}</div>
+          <div class="detail-sub">${ranked.length} pack sizes compared</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="ranking-banner">
+        <div class="trophy">🏆</div>
+        <p>The <strong>₹${best.price} / ${best.qty}${best.unit} pack</strong> gives you the most value at <strong>₹${best.perUnit.toFixed(4)} per ${best.baseUnit}</strong>.
+        ${ranked.length>1?`Buying the best pack saves up to <strong>${savingsPct}%</strong> compared to the worst option.`:''}</p>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card accent-card">
+          <div class="i-label">Best Pack</div>
+          <div class="i-val">₹${best.price}</div>
+          <div class="i-sub">${best.qty}${best.unit} · ₹${best.perUnit.toFixed(4)}/${best.baseUnit}</div>
+        </div>
+        <div class="insight-card">
+          <div class="i-label">Pack Options</div>
+          <div class="i-val">${ranked.length}</div>
+          <div class="i-sub">sizes available</div>
+        </div>
+        <div class="insight-card">
+          <div class="i-label">Price Range</div>
+          <div class="i-val">₹${Math.min(...p.packs.map(x=>x.price))}–${Math.max(...p.packs.map(x=>x.price))}</div>
+          <div class="i-sub">across all packs</div>
+        </div>
+        ${ranked.length>1?`<div class="insight-card"><div class="i-label">Max Savings</div><div class="i-val">${savingsPct}%</div><div class="i-sub">vs worst-value pack</div></div>`:''}
+      </div>
+      <table class="compare-table">
+        <thead><tr><th>Pack</th><th>Price (₹)</th><th>Quantity</th><th>Cost per unit</th><th>Verdict</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+      <p style="font-size:0.78rem;color:var(--mid);text-align:center">💡 Lower cost per unit = better value. Always buy the 🏆 pack when you can.</p>
+    </div>`;
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('detailPage').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── ADMIN ──
+function renderAdmin() {
+  renderAdminList();
+  updateBrandDatalist();
+  updateCategoryUI();
+  if (!document.querySelector('#packBuilder .pack-row-input')) addPackRow();
+}
+function switchAdminTab(section, tab) {
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById(section).classList.add('active');
+  if (section==='manageProducts') renderAdminList();
+}
+function renderAdminList() {
+  const list = document.getElementById('adminList');
+  if (!products.length) { list.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><p>No products yet.</p></div>`; return; }
+  list.innerHTML = products.map(p => {
+    const packsHtml = p.packs.map((pk,pi)=>`<span class="admin-pack-tag">₹${pk.price} / ${pk.qty}${pk.unit} <span class="del-pack" onclick="deletePack('${p.id}',${pi})">✕</span></span>`).join('');
+    return `<div class="admin-item" id="ai-${p.id}">
+      <div class="admin-item-top">
+        <div><div class="admin-item-brand">${p.brand} · ${p.category}</div><div class="admin-item-name">${p.name}</div></div>
+        <div class="admin-actions"><button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Delete</button></div>
+      </div>
+      <div class="admin-packs">${packsHtml}</div>
+      <div style="margin-top:10px">
+        <div class="pack-row-input">
+          <input class="form-control" id="ap-price-${p.id}" type="number" placeholder="Price ₹" min="0.01" step="0.01" style="max-width:110px">
+          <input class="form-control" id="ap-qty-${p.id}" type="number" placeholder="Qty" min="0.01" step="0.01" style="max-width:90px">
+          <select class="form-control" id="ap-unit-${p.id}" style="max-width:90px">
+            <option>g</option><option>ml</option><option>kg</option><option>L</option><option>pcs</option>
+          </select>
+          <input class="form-control" id="ap-label-${p.id}" type="text" placeholder="Label (optional)" style="max-width:160px">
+          <button class="btn btn-primary" onclick="addPackToProduct('${p.id}')" style="padding:10px 16px;white-space:nowrap">+ Add Pack</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addPackRow() {
+  const builder=document.getElementById('packBuilder');
+  const row=document.createElement('div'); row.className='pack-row-input';
+  row.innerHTML=`
+    <input class="form-control" type="number" placeholder="Price ₹" min="0.01" step="0.01" data-role="price">
+    <input class="form-control" type="number" placeholder="Qty" min="0.01" step="0.01" data-role="qty">
+    <select class="form-control" data-role="unit" style="max-width:90px"><option>g</option><option>ml</option><option>kg</option><option>L</option><option>pcs</option></select>
+    <input class="form-control" type="text" placeholder="Label (e.g. ₹10 Pack)" data-role="label">
+    <button class="btn btn-ghost" style="padding:10px 12px" onclick="this.parentElement.remove()">✕</button>`;
+  builder.appendChild(row);
+}
+function saveProduct() {
+  const brand=document.getElementById('aBrand').value.trim();
+  const name=document.getElementById('aProduct').value.trim();
+  const cat=document.getElementById('aCategory').value.trim();
+  if (!brand||!name||!cat) { toast('Fill in brand, product, and category','error'); return; }
+  const rows=document.querySelectorAll('#packBuilder .pack-row-input');
+  const packs=[]; let valid=true;
+  rows.forEach(row=>{
+    const price=parseFloat(row.querySelector('[data-role=price]').value);
+    const qty=parseFloat(row.querySelector('[data-role=qty]').value);
+    const unit=row.querySelector('[data-role=unit]').value;
+    const label=row.querySelector('[data-role=label]').value.trim();
+    if (!price||!qty||price<=0||qty<=0){valid=false;return;}
+    packs.push({label:label||`₹${price} Pack`,price,qty,unit});
+  });
+  if (!valid||!packs.length){toast('Add at least one valid pack size','error');return;}
+  products.push({id:uid(),brand,name,category:cat,packs});
+  save();
+  const allCats=getCategories();
+  if (!allCats.includes(cat)) saveCategories([...allCats,cat]);
+  clearForm(); toast(`${brand} ${name} saved! ✓`,'success');
+  updateBrandDatalist(); updateCategoryUI();
+}
+function clearForm() {
+  document.getElementById('aBrand').value='';
+  document.getElementById('aProduct').value='';
+  document.getElementById('aCategory').value='';
+  document.getElementById('packBuilder').innerHTML='';
+  addPackRow();
+}
+function addPackToProduct(id) {
+  const p=products.find(x=>x.id===id); if (!p) return;
+  const price=parseFloat(document.getElementById(`ap-price-${id}`).value);
+  const qty=parseFloat(document.getElementById(`ap-qty-${id}`).value);
+  const unit=document.getElementById(`ap-unit-${id}`).value;
+  const label=document.getElementById(`ap-label-${id}`).value.trim();
+  if (!price||!qty||price<=0||qty<=0){toast('Enter valid price & quantity','error');return;}
+  p.packs.push({label:label||`₹${price} Pack`,price,qty,unit});
+  save(); renderAdminList(); toast('Pack added ✓','success');
+}
+function deletePack(id,pi) {
+  const p=products.find(x=>x.id===id); if (!p) return;
+  if (p.packs.length===1){toast("Can't remove the only pack",'error');return;}
+  p.packs.splice(pi,1); save(); renderAdminList(); toast('Pack removed','success');
+}
+function deleteProduct(id) {
+  if (!confirm('Delete this product?')) return;
+  products=products.filter(x=>x.id!==id); save(); renderAdminList(); toast('Deleted','success');
+}
+function updateBrandDatalist() {
+  const dl=document.getElementById('brandList'); if (!dl) return;
+  dl.innerHTML=getBrands().map(b=>`<option value="${b}">`).join('');
+}
+
+// ── CATEGORIES ──
+function getCategories() {
+  const saved=JSON.parse(localStorage.getItem('sp_categories')||'[]');
+  const fromProds=[...new Set(products.map(p=>p.category))];
+  return [...new Set([...saved,...fromProds])].filter(Boolean).sort();
+}
+function saveCategories(cats) { localStorage.setItem('sp_categories',JSON.stringify([...new Set(cats)].sort())); }
+function updateCategoryUI() {
+  const cats=getCategories();
+  const dl=document.getElementById('categoryList'); if (dl) dl.innerHTML=cats.map(c=>`<option value="${c}">`).join('');
+  const chips=document.getElementById('catChips');
+  if (chips) chips.innerHTML=cats.map(c=>`<span onclick="document.getElementById('aCategory').value='${c.replace(/'/g,"\\'")}'" style="cursor:pointer;font-size:0.75rem;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:var(--cream);color:var(--mid);transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">${c}</span>`).join('');
+}
+function manageCats() {
+  const existing=document.getElementById('catModal'); if (existing) existing.remove();
+  const modal=document.createElement('div'); modal.id='catModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(44,26,14,0.7);display:flex;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(3px)';
+  modal.innerHTML=`<div style="background:#fff;border-radius:14px;padding:28px;width:360px;max-width:95vw;max-height:80vh;overflow-y:auto">
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:6px">Manage Sub-categories</h3>
+    <p style="font-size:0.78rem;color:var(--mid);margin-bottom:18px">Add new or delete unused ones.</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input id="newCatInput" class="form-control" placeholder="Type new sub-category…" style="flex:1" onkeydown="if(event.key==='Enter')addNewCat()">
+      <button class="btn btn-accent" onclick="addNewCat()">Add</button>
+    </div>
+    <div id="catModalList" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:18px" onclick="document.getElementById('catModal').remove()">Done</button>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+  renderCatModalList();
+  setTimeout(()=>document.getElementById('newCatInput').focus(),100);
+}
+function renderCatModalList() {
+  const cats=getCategories(); const usedCats=new Set(products.map(p=>p.category));
+  const list=document.getElementById('catModalList'); if (!list) return;
+  if (!cats.length){list.innerHTML=`<p style="font-size:0.82rem;color:var(--mid);text-align:center">No categories yet.</p>`;return;}
+  list.innerHTML=cats.map(c=>{
+    const inUse=usedCats.has(c);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid var(--border);border-radius:7px;background:var(--cream)">
+      <span style="font-size:0.88rem;color:var(--brown)">${c} ${inUse?'<span style="font-size:0.68rem;color:var(--mid)">(in use)</span>':''}</span>
+      ${inUse?`<span style="font-size:0.7rem;color:var(--light)">can't delete</span>`:`<button class="btn btn-danger" onclick="deleteCat('${c.replace(/'/g,"\\'")}')">✕ Delete</button>`}
+    </div>`;
+  }).join('');
+}
+function addNewCat() {
+  const input=document.getElementById('newCatInput'); const val=input.value.trim(); if (!val) return;
+  const cats=getCategories();
+  if (cats.map(c=>c.toLowerCase()).includes(val.toLowerCase())){toast('Already exists','error');return;}
+  saveCategories([...cats,val]); input.value=''; renderCatModalList(); updateCategoryUI(); toast(`"${val}" added ✓`,'success');
+}
+function deleteCat(cat) {
+  if (products.some(p=>p.category===cat)){toast("Can't delete — in use",'error');return;}
+  saveCategories(getCategories().filter(c=>c!==cat)); renderCatModalList(); updateCategoryUI(); toast(`"${cat}" deleted`,'success');
+}
+
+// ── INIT ──
+renderShop();
+updateBrandDatalist();
+updateCategoryUI();
+if (!document.querySelector('#packBuilder .pack-row-input')) addPackRow();
+</script>
+</body>
+</html>
